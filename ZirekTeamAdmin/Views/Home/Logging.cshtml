@@ -1,0 +1,98 @@
+﻿@{
+    ViewData["Title"] = "Logging";
+}
+<link rel="stylesheet" href="https://cdn.materialdesignicons.com/5.0.45/css/materialdesignicons.min.css">
+<link href="~/dist/css/styleTree.css" rel="stylesheet" />
+
+<div class="card mt-2">
+    <div class="card-header bg-white d-flex align-items-center justify-content-between mt-2">
+        <h3>Логгирование</h3>
+    </div>
+    <div class="card mb-2">
+        <div class="table-responsive card-body">
+            <table id="cbdtable" class="table table-hover bg-white border p-2" style="font-weight: 400; font-size: 80%">
+
+                <thead>
+                    <tr class="table-borderless p-2">
+                        <th>
+                            Код
+                        </th>
+                        <th>
+                            Наименование
+                        </th>
+                        <th>
+                            Кем создан
+                        </th>
+                        <th>
+                            Когда создан
+                        </th>
+                        <th>
+                        </th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+</div>
+
+@section scripts
+{
+    <script>
+        $(document).ready(function () {
+            let table = $("#cbdtable").DataTable({
+                language: {
+                    url: "/Russian.json"
+                },
+                ordering: false,
+                autoWidth: true,
+                processing: true,
+                serverSide: true,
+                searching: false,
+                fixedHeader: true,
+                colReorder: true,
+                pageLength:10,
+                ajax: {
+                    url: "/Home/LoadLoggingTable",
+                    type: "POST",
+                    contentType: "application/json",
+                    dataType: "json",
+                    data: function (data) {
+                        return JSON.stringify(data);
+                    }
+                },
+
+                columns: [
+                    { data: "id", orderable: false },
+                    { data: "name", orderable: false },
+                    { data: "createdBy", orderable: false },
+                    { data: "createdAt", orderable: false,
+                    render: (data, type, row, meta) => {
+                            if (data == null) return "";
+                            else {
+                                console.log(data)
+                                var data1 = data.split("T")[0].split("-");
+                                var data2 = data.split("T")[1].split(":");
+                                return data1[2] + "-" + data1[1] + "-" + data1[0] + " " + data2[0] + ":" + data2[1] + ":" + data2[2].slice(0,2);
+                            }
+                        }},
+                    {
+                        data: 'id',
+                        orderable: false,
+                        sWidth:"100px",
+                        render: function (data, type, row, meta) {
+                        @{<text>
+                            return `
+                            <div class="row">
+                                <div class="mb-1 d-flex">
+                                    <a href="/Home/Loggs?id=` + data + `" class="badge badge-primary mr-1" style="font-weight: 400;  font-size:100%">История</a>
+                                </div>
+                            </div>
+                                    `
+                        </text>}
+                        }
+                    },
+                ]
+            });
+        });
+    </script>
+}

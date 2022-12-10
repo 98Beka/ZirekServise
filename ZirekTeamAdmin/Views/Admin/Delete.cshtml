@@ -1,0 +1,25 @@
+﻿@model ZirekTeamAdmin.ViewModels.DeleteUserViewModel
+
+@{
+    ViewData["Title"] = "Delete";
+}
+<div style="withd:100%; text-align:center;">
+
+    <br />
+    <hr />
+    <div>
+        <h4 style="color:white">Вы действительно хотите удалить этого пользователя?</h4>
+        <hr />
+        <br />
+        <h5 style="color:white">email: @Model.Email</h5>
+        <h5 style="color:white"> роль: @Model.Role</h5>
+        <br />
+        <hr />
+
+        <form asp-action="DeleteConfirmed">
+            <input type="hidden" asp-for=@Model.Id />
+            <a class="btn bg-primary" href="Index" style="color:white">Отмена</a>
+            <input type="submit" value="Удалить" class="btn btn-danger" />
+        </form>
+    </div>
+</div>

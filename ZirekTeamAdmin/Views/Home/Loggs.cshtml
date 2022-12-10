@@ -1,0 +1,78 @@
+﻿@model List<ZirekTeamAdmin.ViewModels.LogHistoryViewModel>
+
+@{
+    ViewData["Title"] = "History";
+}
+<link rel="stylesheet" href="https://cdn.materialdesignicons.com/5.0.45/css/materialdesignicons.min.css">
+<link href="~/dist/css/styleTree.css" rel="stylesheet" />
+
+ <nav class="m-0">
+    <ol class="breadcrumb pb-0 mb-0  pl-0 " style="background: none">
+        <li class="breadcrumb-item"><a href="/Home/Logging">Логгирование</a></li>
+        <li class="breadcrumb-item">История</li>
+    </ol>
+ </nav>
+
+<div class="card mt-2">
+    <div class="card-header bg-white d-flex align-items-center justify-content-between mt-2">
+        <h3>История</h3>
+    </div>
+    <div class="card mb-2">
+        <div class="card-body">
+            <table class="table" style="font-weight: 400; font-size: 80%">
+
+                <thead>
+                    <tr class="table-borderless p-2">
+                        <th>
+                            @Html.DisplayNameFor(model => model[0].CreatedAt)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model[0].CreatedBy)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model[0].ActionType)
+                        </th>
+                        <th>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in @Model)
+                    {
+                        <tr class="table-borderless p-2">
+                            <td>
+                                @Html.DisplayFor(model => item.CreatedAt)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(model => item.CreatedBy)
+                            </td>
+                            @{
+                                switch (item.ActionType)
+                                {
+                                    case 0:
+                                        <td>
+                                            Создание
+                                        </td>
+                                        break;
+                                    case 1:
+                                        <td>
+                                            Изменение
+                                        </td>
+                                        break;
+                                    case 2:
+                                        <td>
+                                            Удаление
+                                        </td>
+                                        break;
+                                }
+                            } 
+                            <th>
+                                <a asp-controller="Home" asp-action="LogDetails" asp-route-id="@item.Id" class="badge badge-primary mr-1" style="font-weight: 400;  font-size:100%">Подробнее</a>
+                            </th>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
