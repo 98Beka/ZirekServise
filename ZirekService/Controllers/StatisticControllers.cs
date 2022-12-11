@@ -23,21 +23,25 @@ public class StatisticController : Controller
          _context.StatisticClassificator.ToList();
 
     [HttpPost("/GetStatistic")]
-    public List<float> GetStatistic(StatisticFilter filter)
-    {
+    public IActionResult GetStatistic(StatisticFilter filter) {
         if (string.IsNullOrEmpty(filter.StatisticClassificatorName))
             return null;
 
-        var classificator_id = _context.StatisticClassificator.Where(s => s.Name == filter.StatisticClassificatorName).Select(s=>s.StatisticClassificatorId).FirstOrDefault();
-        var res = _context.StatisticEntity.Where(s => s.StatisticClassificatorId == classificator_id);
+        var classificator_id = _context.StatisticClassificator
+            .Where(s => s.Name.ToLower() == filter.StatisticClassificatorName.ToLower())
+            .Select(s => s.StatisticClassificatorId).FirstOrDefault();
 
-        if(filter.dateFrom!= null)
-            res = res.Where(s => s.CreatedDate >= filter.dateFrom);
+        var StatisticEntities = _context.StatisticEntity.Where(s => s.StatisticClassificatorId == classificator_id);
+
+        if (filter.dateFrom != null)
+            StatisticEntities = StatisticEntities.Where(s => s.CreatedDate >= filter.dateFrom);
 
         if (filter.dateTo != null)
-            res = res.Where(s => s.CreatedDate >= filter.dateTo);
+            StatisticEntities = StatisticEntities.Where(s => s.CreatedDate >= filter.dateTo);
 
-        return res.Select(s => s.Value).ToList();
+        var res = StatisticEntities.Select(s => new { Value = s.Value, TxtValue = s.TxtValue, CreatedDate = s.CreatedDate });
+
+        return Ok(res);
     }
 
     [HttpPost("/SetStatistic")]
