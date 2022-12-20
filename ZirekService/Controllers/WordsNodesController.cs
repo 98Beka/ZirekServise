@@ -19,10 +19,13 @@ namespace ZirekService.Controllers {
 
         [HttpPost]
         public IActionResult Create(WordsNodeViewModel node) {
+            var account = _accountService.GetCurrentAccount();
+            if (account == null)
+                throw new NullReferenceException("account=null");
             var newNode = new WordsNodeEntity() {
                 Name = node.Name,
                 IsPublic = node.IsPublic,
-                AccountId = _accountService.GetCurrentAccount().Id
+                AccountId = account.Id
             };
 
             _context.WordsNodes.Add(newNode);
