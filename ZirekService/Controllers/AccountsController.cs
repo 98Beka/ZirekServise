@@ -10,11 +10,11 @@ namespace ZirekService.Controllers
 {
     [Route("[controller]")]
     [ApiController]
-    public class AccountController : Controller {
+    public class AccountsController : Controller {
         private readonly UserManager<IdentityUser> _userManager;
         private readonly IConfiguration _configuration;
 
-        public AccountController(UserManager<IdentityUser> userManager, IConfiguration configuration) {
+        public AccountsController(UserManager<IdentityUser> userManager, IConfiguration configuration) {
             this._userManager = userManager;
             this._configuration = configuration;
         }

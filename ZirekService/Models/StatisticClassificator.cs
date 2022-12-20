@@ -2,10 +2,9 @@
 
 namespace ZirekService.Models;
 
-public class StatisticClassificator
-{
-    [Key]
-    public int StatisticClassificatorId { get; set; }
+public class StatisticClassificator {
+    public int Id { get; set; }
     public string Name { get; set; }
-    public List<StatisticEntity>? StatisticModels { get; set; }
+    public int? ParentId { get; set; }
+    public List<StatisticEntity>? Statistics { get; set; } = new List<StatisticEntity>();
 }

@@ -22,7 +22,9 @@ builder.Services.AddIdentity<IdentityUser, IdentityRole>(options => options.Sign
     .AddEntityFrameworkStores<ApplicationDbContext>();
 builder.Services.AddScoped<ApplicationDbContext>();
 builder.Services.AddScoped<AuditService>();
+builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<RoleService>();
+builder.Services.AddTransient<AccountService>();
 builder.Services.AddScoped<IVisitStatisticService, VisitStatisticService>();
 
 builder.Services.AddAuthentication(options => {

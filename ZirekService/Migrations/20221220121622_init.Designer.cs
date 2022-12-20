@@ -12,8 +12,8 @@ using ZirekService.Data;
 namespace ZirekService.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20221211141840_add_TxtValue_to_StaticEntity")]
-    partial class addTxtValuetoStaticEntity
+    [Migration("20221220121622_init")]
+    partial class init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -221,6 +221,41 @@ namespace ZirekService.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("StatisticClassificatorStatisticEntity", b =>
+                {
+                    b.Property<int>("StatisticClassificatorsId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("StatisticsId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("StatisticClassificatorsId", "StatisticsId");
+
+                    b.HasIndex("StatisticsId");
+
+                    b.ToTable("StatisticClassificatorStatisticEntity");
+                });
+
+            modelBuilder.Entity("ZirekService.Models.AccountEntity", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("IdentityUserId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("level")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Accounts");
+                });
+
             modelBuilder.Entity("ZirekService.Models.BaseAudit", b =>
                 {
                     b.Property<long>("Id")
@@ -258,21 +293,93 @@ namespace ZirekService.Migrations
                     b.ToTable("BaseAudits");
                 });
 
-            modelBuilder.Entity("ZirekService.Models.StatisticClassificator", b =>
+            modelBuilder.Entity("ZirekService.Models.EnWordEntity", b =>
                 {
-                    b.Property<int>("StatisticClassificatorId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("StatisticClassificatorId"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("Priority")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Value")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int?>("WordsNodeEntityId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("WordsNodeEntityId");
+
+                    b.ToTable("EnWords");
+                });
+
+            modelBuilder.Entity("ZirekService.Models.KeyWordEntity", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Value")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int?>("WordsNodeEntityId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("WordsNodeEntityId");
+
+                    b.ToTable("keyWords");
+                });
+
+            modelBuilder.Entity("ZirekService.Models.RuWordEnity", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("EnWordId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Value")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EnWordId");
+
+                    b.ToTable("RuWords");
+                });
+
+            modelBuilder.Entity("ZirekService.Models.StatisticClassificator", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.HasKey("StatisticClassificatorId");
+                    b.Property<int?>("ParentId")
+                        .HasColumnType("integer");
 
-                    b.ToTable("StatisticClassificator");
+                    b.HasKey("Id");
+
+                    b.ToTable("StatisticClassificators");
                 });
 
             modelBuilder.Entity("ZirekService.Models.StatisticEntity", b =>
@@ -286,9 +393,6 @@ namespace ZirekService.Migrations
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<int>("StatisticClassificatorId")
-                        .HasColumnType("integer");
-
                     b.Property<string>("TxtValue")
                         .IsRequired()
                         .HasColumnType("text");
@@ -298,9 +402,32 @@ namespace ZirekService.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("StatisticClassificatorId");
+                    b.ToTable("Statistics");
+                });
 
-                    b.ToTable("StatisticEntity");
+            modelBuilder.Entity("ZirekService.Models.WordsNodeEntity", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("AccountId")
+                        .HasColumnType("integer");
+
+                    b.Property<bool>("IsPublic")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AccountId");
+
+                    b.ToTable("WordsNodes");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -354,20 +481,72 @@ namespace ZirekService.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("ZirekService.Models.StatisticEntity", b =>
+            modelBuilder.Entity("StatisticClassificatorStatisticEntity", b =>
                 {
-                    b.HasOne("ZirekService.Models.StatisticClassificator", "StatisticClassificator")
-                        .WithMany("StatisticModels")
-                        .HasForeignKey("StatisticClassificatorId")
+                    b.HasOne("ZirekService.Models.StatisticClassificator", null)
+                        .WithMany()
+                        .HasForeignKey("StatisticClassificatorsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("StatisticClassificator");
+                    b.HasOne("ZirekService.Models.StatisticEntity", null)
+                        .WithMany()
+                        .HasForeignKey("StatisticsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
-            modelBuilder.Entity("ZirekService.Models.StatisticClassificator", b =>
+            modelBuilder.Entity("ZirekService.Models.EnWordEntity", b =>
                 {
-                    b.Navigation("StatisticModels");
+                    b.HasOne("ZirekService.Models.WordsNodeEntity", null)
+                        .WithMany("EnWords")
+                        .HasForeignKey("WordsNodeEntityId");
+                });
+
+            modelBuilder.Entity("ZirekService.Models.KeyWordEntity", b =>
+                {
+                    b.HasOne("ZirekService.Models.WordsNodeEntity", null)
+                        .WithMany("KeyWords")
+                        .HasForeignKey("WordsNodeEntityId");
+                });
+
+            modelBuilder.Entity("ZirekService.Models.RuWordEnity", b =>
+                {
+                    b.HasOne("ZirekService.Models.EnWordEntity", "EnWord")
+                        .WithMany("RuWords")
+                        .HasForeignKey("EnWordId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("EnWord");
+                });
+
+            modelBuilder.Entity("ZirekService.Models.WordsNodeEntity", b =>
+                {
+                    b.HasOne("ZirekService.Models.AccountEntity", "Account")
+                        .WithMany("wordsNodes")
+                        .HasForeignKey("AccountId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Account");
+                });
+
+            modelBuilder.Entity("ZirekService.Models.AccountEntity", b =>
+                {
+                    b.Navigation("wordsNodes");
+                });
+
+            modelBuilder.Entity("ZirekService.Models.EnWordEntity", b =>
+                {
+                    b.Navigation("RuWords");
+                });
+
+            modelBuilder.Entity("ZirekService.Models.WordsNodeEntity", b =>
+                {
+                    b.Navigation("EnWords");
+
+                    b.Navigation("KeyWords");
                 });
 #pragma warning restore 612, 618
         }
