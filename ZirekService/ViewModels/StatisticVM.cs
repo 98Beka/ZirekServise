@@ -1,6 +1,6 @@
 ﻿namespace Minjust.Cdb.Api.Models;
 
-public class StatisticViewModel
+public class StatisticVM
 {
     public string statisticClassificatorName { get; set; }
     public float Value { get; set; }

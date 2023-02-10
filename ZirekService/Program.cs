@@ -15,7 +15,7 @@ var builder = WebApplication.CreateBuilder(args);
 ConfigurationManager configuration = builder.Configuration;
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(
-        builder.Configuration.GetConnectionString("DefaultConnection")));
+        builder.Configuration.GetConnectionString("ZirekService")));
 
 
 builder.Services.AddIdentity<IdentityUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = false)
@@ -88,12 +88,11 @@ using (var scope = app.Services.CreateScope()) {
     }
 }
 
-
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment()) {
+//if (app.Environment.IsDevelopment()) {
     app.UseSwagger();
     app.UseSwaggerUI();
-}
+//}
 
 app.UseHttpsRedirection();
 

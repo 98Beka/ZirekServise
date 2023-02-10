@@ -1,0 +1,8 @@
+version: '3.4'
+
+services:
+  zirekservice:
+    image: ${DOCKER_REGISTRY-}zirekservice
+    build:
+      context: .
+      dockerfile: ZirekService/Dockerfile

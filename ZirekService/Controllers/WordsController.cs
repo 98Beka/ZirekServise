@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Data;
 using ZirekService.Data;
 using ZirekService.Models;
 using ZirekService.Services;
@@ -11,6 +13,7 @@ using ZirekService.ViewModels;
 namespace ZirekService.Controllers {
     [Route("[controller]")]
     [ApiController]
+    [Authorize(Roles = RoleService.UserRole)]
     public class WordsController : ControllerBase {
         private readonly ApplicationDbContext _context;
         private readonly AccountService _accountEntity;
@@ -19,21 +22,58 @@ namespace ZirekService.Controllers {
             _accountEntity = accountService;
         }
 
-        //private IQueryable<EnWordEntity> GetFiltratedWords(WordsFilter wordsFilter) {
-        //    var words = _context.EnWords.Where(s => s.Ac.Any(s => s.Id == wordsFilter.AccountId));
-        //    return words;
-        //}
+        [HttpPost("/CreateEnWord")]
+        public IActionResult CreateEnWord(CreateEnWordVM word) {
+            _context.RuWords.AddRange(word.RuWords);
+            _context.EnWords.Add(new EnWordEntity() {
+                Priority = 100,
+                Value = word.Value,
+                RuWords = word.RuWords,
+                Type = word.Type
+            });
+            _context.SaveChanges();
+            return Ok();
+        }
 
-        //[HttpGet("/ShowWords")]
-        //public async Task<List<EnWordEntity>> ShowWords(WordsFilter wordsFilter) {
-        //    var words = GetFiltratedWords(wordsFilter);
-        //    return await words.Include(s => s.RuWordEnitys).ToListAsync();
-        //}
+        [HttpGet("/GetEnWordById")]
+        public IActionResult GetEnWordById(int id) {
+            var res = _context.EnWords.Where(s => s.Id == id).FirstOrDefault();
+            if (res == null)
+                return NotFound();
 
-        //[HttpGet("/GetWordsFirstLevel")]
-        //public List<string> GetWordsFirstLevel(int lenth) {
-        //    return _context.RuWords.;
-        //}
+            return Ok(res);
+        }
+
+        [HttpPost("/GetEnWords")]
+        public List<EnWordEntity> GetEnWords(WordsFilterVM filterVM) {
+            IQueryable<EnWordEntity> words = _context.EnWords;
+            if (!string.IsNullOrEmpty(filterVM.Value))
+                words = words.Where(s => s.Value == filterVM.Value);
+            return words.ToList();
+        }
+
+        [HttpPut("/EditEnWord")]
+        public IActionResult EditEnWord(CreateEnWordVM word, int wordId) {
+            var wordEntity = _context.EnWords.Where(s => s.Id == wordId).FirstOrDefault();
+            if (word == null)
+                return NotFound();
+            wordEntity.RuWords = word.RuWords;
+            wordEntity.Value = word.Value;
+            _context.Update(wordEntity);
+            _context.SaveChanges();
+            return Ok();
+        }
+
+        [HttpDelete("/DeleteEnWord")]
+        public IActionResult DeleteEnWord(int wordId) {
+            var word = _context.EnWords.Where(s => s.Id == wordId).FirstOrDefault();
+            if (word == null)
+                return NotFound();
+            _context.EnWords.Remove(word);
+            _context.SaveChanges();
+            return Ok();
+        }
+
 
     }
 }

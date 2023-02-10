@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
 namespace ZirekService.ViewModels {
-    public class RegisterModel {
+    public class RegisterVM {
         [Required(ErrorMessage = "User Name is required")]
         public string? Username { get; set; }
 

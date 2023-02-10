@@ -271,6 +271,7 @@ namespace ZirekService.Migrations
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Value = table.Column<string>(type: "text", nullable: false),
+                    Type = table.Column<string>(type: "text", nullable: true),
                     Priority = table.Column<int>(type: "integer", nullable: false),
                     WordsNodeEntityId = table.Column<int>(type: "integer", nullable: true)
                 },

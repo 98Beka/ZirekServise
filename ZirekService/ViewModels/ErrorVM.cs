@@ -1,6 +1,6 @@
 namespace ZirekService.ViewModels
 {
-    public class ErrorViewModel
+    public class ErrorVM
     {
         public string? RequestId { get; set; }
 

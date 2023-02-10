@@ -9,7 +9,7 @@ using ZirekService.Services;
 namespace ZirekService.Controllers;
 [Route("[controller]")]
 [ApiController]
-//[Authorize(Roles = RoleService.AdminRole)]
+[Authorize(Roles = RoleService.AdminRole)]
 public class StatisticController : Controller
 {
     readonly ApplicationDbContext _context;
@@ -23,7 +23,7 @@ public class StatisticController : Controller
          _context.StatisticClassificators.ToList();
 
     [HttpPost("/GetStatistic")]
-    public IActionResult GetStatistic(StatisticFilter filter) {
+    public IActionResult GetStatistic(StatisticFilterVM filter) {
         if (string.IsNullOrEmpty(filter.StatisticClassificatorName))
             return null;
 

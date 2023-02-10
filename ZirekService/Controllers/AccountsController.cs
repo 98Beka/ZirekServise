@@ -4,6 +4,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using ZirekService.Services;
 using ZirekService.ViewModels;
 
 namespace ZirekService.Controllers
@@ -14,13 +15,14 @@ namespace ZirekService.Controllers
         private readonly UserManager<IdentityUser> _userManager;
         private readonly IConfiguration _configuration;
 
-        public AccountsController(UserManager<IdentityUser> userManager, IConfiguration configuration) {
-            this._userManager = userManager;
-            this._configuration = configuration;
+        public AccountsController(UserManager<IdentityUser> userManager, IConfiguration configuration ) {
+            _userManager = userManager;
+            _configuration = configuration;
         }
 
         [HttpPost("/login")]
-        public async Task<IActionResult> Login([FromBody] LoginModel model) {
+        public async Task<IActionResult> Login([FromBody] LoginVM model) {
+            model.Username = model.Username.ToLower();
             var user = await _userManager.FindByNameAsync(model.Username);
             if (user != null && await _userManager.CheckPasswordAsync(user, model.Password)) {
                 var userRoles = await _userManager.GetRolesAsync(user);
@@ -46,10 +48,11 @@ namespace ZirekService.Controllers
         }
 
         [HttpPost("/register")]
-        public async Task<IActionResult> Register([FromBody] RegisterModel model) {
+        public async Task<IActionResult> Register([FromBody] RegisterVM model) {
+            model.Username = model.Username.ToLower();
             var userExists = await _userManager.FindByNameAsync(model.Username);
             if (userExists != null)
-                return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = "User already exists!" });
+                return StatusCode(StatusCodes.Status500InternalServerError, new ResponseVM { Status = "Error", Message = "User already exists!" });
 
             IdentityUser user = new() {
                 Email = model.Email,
@@ -58,9 +61,10 @@ namespace ZirekService.Controllers
             };
             var result = await _userManager.CreateAsync(user, model.Password);
             if (!result.Succeeded)
-                return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = "User creation failed! Please check user details and try again." });
-            
-            return Ok(new Response { Status = "Success", Message = "User created successfully!" });
+                return StatusCode(StatusCodes.Status500InternalServerError, new ResponseVM { Status = "Error", Message = "User creation failed! Please check user details and try again." });
+            else
+                await _userManager.AddToRoleAsync(user, RoleService.UserRole);
+            return Ok(new ResponseVM { Status = "Success", Message = "User created successfully!" });
         }
 
         private JwtSecurityToken GetToken(List<Claim> authClaims) {

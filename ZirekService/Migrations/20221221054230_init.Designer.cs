@@ -12,7 +12,7 @@ using ZirekService.Data;
 namespace ZirekService.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20221220121622_init")]
+    [Migration("20221221054230_init")]
     partial class init
     {
         /// <inheritdoc />
@@ -303,6 +303,9 @@ namespace ZirekService.Migrations
 
                     b.Property<int>("Priority")
                         .HasColumnType("integer");
+
+                    b.Property<string>("Type")
+                        .HasColumnType("text");
 
                     b.Property<string>("Value")
                         .IsRequired()

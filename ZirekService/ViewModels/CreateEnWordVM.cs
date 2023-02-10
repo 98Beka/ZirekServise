@@ -1,9 +1,11 @@
-﻿namespace ZirekService.Models {
-    public class EnWordEntity {
-        public int Id { get; set; }
+﻿using ZirekService.Models;
+
+namespace ZirekService.ViewModels
+{
+    public class CreateEnWordVM
+    {
         public string Value { get; set; }
         public string? Type { get; set; }
-        public int Priority { get; set; }
         public List<RuWordEnity> RuWords { get; set; } = new List<RuWordEnity>();
     }
 }

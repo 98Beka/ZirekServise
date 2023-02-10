@@ -2,7 +2,7 @@
 
 namespace ZirekService.ViewModels;
 
-public class LoggsViewModel
+public class LoggsVm
 {
     [Display(Name = "Код")]
     public long Id { get; set; }

@@ -301,6 +301,9 @@ namespace ZirekService.Migrations
                     b.Property<int>("Priority")
                         .HasColumnType("integer");
 
+                    b.Property<string>("Type")
+                        .HasColumnType("text");
+
                     b.Property<string>("Value")
                         .IsRequired()
                         .HasColumnType("text");

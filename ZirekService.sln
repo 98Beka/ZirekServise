@@ -5,7 +5,9 @@ VisualStudioVersion = 17.3.32901.215
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ZirekService", "ZirekService\ZirekService.csproj", "{C5D5B543-2995-4F48-BE32-B0279521D9ED}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZirekTeamAdmin", "ZirekTeamAdmin\ZirekTeamAdmin.csproj", "{4AA0B465-BE7C-4317-88C4-01B30C242C05}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ZirekTeamAdmin", "ZirekTeamAdmin\ZirekTeamAdmin.csproj", "{4AA0B465-BE7C-4317-88C4-01B30C242C05}"
+EndProject
+Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{02F290A1-0882-40AC-A1CA-C53B608BF85A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{4AA0B465-BE7C-4317-88C4-01B30C242C05}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4AA0B465-BE7C-4317-88C4-01B30C242C05}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4AA0B465-BE7C-4317-88C4-01B30C242C05}.Release|Any CPU.Build.0 = Release|Any CPU
+		{02F290A1-0882-40AC-A1CA-C53B608BF85A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{02F290A1-0882-40AC-A1CA-C53B608BF85A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{02F290A1-0882-40AC-A1CA-C53B608BF85A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{02F290A1-0882-40AC-A1CA-C53B608BF85A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

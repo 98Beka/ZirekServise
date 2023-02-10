@@ -19,7 +19,7 @@ namespace ZirekService.Services {
         private AccountEntity CreateAccount() {
             var userId = _context.Users.Where(s => s.UserName == _httpContextAccessor.HttpContext.User.Identity.Name).Select(s => s.Id).FirstOrDefault();
             if (userId == null)
-                throw new ArgumentNullException("AccountService userId = null or user not found");
+                throw new ArgumentNullException("AccountService: userId = null or user not found");
             var account = new AccountEntity() {
                 IdentityUserId = userId,
                 level = 0,

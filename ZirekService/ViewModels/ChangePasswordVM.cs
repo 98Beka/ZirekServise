@@ -1,11 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
 namespace ZirekService.ViewModels {
-    public class UserCreateViewModel {
-        [Required]
+    public class ChangePasswordVM {
+        public string Id { get; set; }
         public string Email { get; set; }
-        [Required]
-        public string Role { get; set; }
         [Required]
         [DataType(DataType.Password)]
         [Display(Name = "Пароль")]
