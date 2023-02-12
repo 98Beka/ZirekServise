@@ -61,7 +61,7 @@ namespace ZirekService.Controllers
             };
             var result = await _userManager.CreateAsync(user, model.Password);
             if (!result.Succeeded)
-                return StatusCode(StatusCodes.Status500InternalServerError, new ResponseVM { Status = "Error", Message = "User creation failed! Please check user details and try again." });
+                return StatusCode(StatusCodes.Status500InternalServerError, result.Errors);
             else
                 await _userManager.AddToRoleAsync(user, RoleService.UserRole);
             return Ok(new ResponseVM { Status = "Success", Message = "User created successfully!" });
