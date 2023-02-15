@@ -20,10 +20,10 @@ namespace ZirekService.Controllers
             _configuration = configuration;
         }
 
-        [HttpPost("/login")]
-        public async Task<IActionResult> Login([FromBody] LoginVM model) {
-            model.Username = model.Username.ToLower();
-            var user = await _userManager.FindByNameAsync(model.Username);
+        [HttpPost("/Login")]
+        public async Task<IActionResult> Login(LoginVM model) {
+            model.Email = model.Email.ToLower();
+            var user = await _userManager.FindByEmailAsync(model.Email);
             if (user != null && await _userManager.CheckPasswordAsync(user, model.Password)) {
                 var userRoles = await _userManager.GetRolesAsync(user);
 
@@ -47,10 +47,25 @@ namespace ZirekService.Controllers
             return Unauthorized();
         }
 
-        [HttpPost("/register")]
-        public async Task<IActionResult> Register([FromBody] RegisterVM model) {
-            model.Username = model.Username.ToLower();
-            var userExists = await _userManager.FindByNameAsync(model.Username);
+        [HttpGet("/IsExist")]
+        public IActionResult IsExist(string email) {
+            if (string.IsNullOrEmpty(email.Trim()))
+                return BadRequest();
+            try {
+                IdentityUser? tmp = _userManager.Users.FirstOrDefault(x => x.Email.ToLower().Trim() == email.ToLower().Trim());
+            if (tmp != null)
+                return Ok(true);
+            else 
+                return Ok(false);
+            }catch (Exception ex) {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+
+        [HttpPost("/Register")]
+        public async Task<IActionResult> Register(RegisterVM model) {
+            model.Email = model.Email.ToLower();
+            var userExists = await _userManager.FindByEmailAsync(model.Email);
             if (userExists != null)
                 return StatusCode(StatusCodes.Status500InternalServerError, new ResponseVM { Status = "Error", Message = "User already exists!" });
 
