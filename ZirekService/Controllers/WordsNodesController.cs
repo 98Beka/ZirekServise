@@ -83,7 +83,7 @@ namespace ZirekService.Controllers
             return nodes.Select(s => new WordsNodeVM() { Name = s.Name, Id = s.Id, IsPublic = s.IsPublic} ).ToList();
         }
 
-        [HttpPut("/EditWordsNode")]
+        [HttpPost("/EditWordsNode")]
         public IActionResult EditWordsNode(WordsNodeVM node) {
             var nodeEntity = _context.WordsNodes.Where(s => s.Id == node.Id).FirstOrDefault();
             if (nodeEntity == null)
