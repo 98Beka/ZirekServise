@@ -52,9 +52,9 @@ namespace ZirekService.Controllers {
             return words.ToList();
         }
 
-        [HttpPut("/EditEnWord")]
-        public IActionResult EditEnWord(CreateEnWordVM word, int wordId) {
-            var wordEntity = _context.EnWords.Where(s => s.Id == wordId).FirstOrDefault();
+        [HttpPost("/EditEnWord")]
+        public IActionResult EditEnWord(EditEnWordVM word) {
+            var wordEntity = _context.EnWords.Where(s => s.Id == word.Id).FirstOrDefault();
             if (word == null)
                 return NotFound();
             wordEntity.RuWords = word.RuWords;
@@ -64,9 +64,9 @@ namespace ZirekService.Controllers {
             return Ok();
         }
 
-        [HttpDelete("/DeleteEnWord")]
-        public IActionResult DeleteEnWord(int wordId) {
-            var word = _context.EnWords.Where(s => s.Id == wordId).FirstOrDefault();
+        [HttpGet("/DeleteEnWord")]
+        public IActionResult DeleteEnWord(int id) {
+            var word = _context.EnWords.Where(s => s.Id == id).FirstOrDefault();
             if (word == null)
                 return NotFound();
             _context.EnWords.Remove(word);

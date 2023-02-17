@@ -1,6 +1,9 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using System.Data;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -22,9 +25,11 @@ namespace ZirekService.Controllers
 
         [HttpPost("/Login")]
         public async Task<IActionResult> Login(LoginVM model) {
-            model.Email = model.Email.ToLower();
+            model.Email = model.Email.ToLower().Trim();
             var user = await _userManager.FindByEmailAsync(model.Email);
-            if (user != null && await _userManager.CheckPasswordAsync(user, model.Password)) {
+            if (user != null) {
+                if (await _userManager.CheckPasswordAsync(user, model.Password) == false)
+                    return BadRequest("Wrong password");
                 var userRoles = await _userManager.GetRolesAsync(user);
 
                 var authClaims = new List<Claim>
@@ -44,27 +49,12 @@ namespace ZirekService.Controllers
                     expiration = token.ValidTo
                 });
             }
-            return Unauthorized();
-        }
-
-        [HttpGet("/IsExist")]
-        public IActionResult IsExist(string email) {
-            if (string.IsNullOrEmpty(email.Trim()))
-                return BadRequest();
-            try {
-                IdentityUser? tmp = _userManager.Users.FirstOrDefault(x => x.Email.ToLower().Trim() == email.ToLower().Trim());
-            if (tmp != null)
-                return Ok(true);
-            else 
-                return Ok(false);
-            }catch (Exception ex) {
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
-            }
+            return Unauthorized($"User '{model.Email}' hasn't found");
         }
 
         [HttpPost("/Register")]
         public async Task<IActionResult> Register(RegisterVM model) {
-            model.Email = model.Email.ToLower();
+            model.Email = model.Email.ToLower().Trim();
             var userExists = await _userManager.FindByEmailAsync(model.Email);
             if (userExists != null)
                 return StatusCode(StatusCodes.Status500InternalServerError, new ResponseVM { Status = "Error", Message = "User already exists!" });
@@ -80,6 +70,18 @@ namespace ZirekService.Controllers
             else
                 await _userManager.AddToRoleAsync(user, RoleService.UserRole);
             return Ok(new ResponseVM { Status = "Success", Message = "User created successfully!" });
+        }
+
+        [HttpGet("/GetUserInfor")]
+        [Authorize(Roles = RoleService.UserRole)]
+        public async Task<IActionResult> GetUserInfo(string email) {
+            email = email.ToLower().Trim();
+            if (string.IsNullOrEmpty(email))
+                return BadRequest("email is empty");
+            var user = await _userManager.Users.Where(x => x.Email.ToLower().Trim() == email).FirstOrDefaultAsync();
+            if (user == null)
+                return NotFound();
+            return Ok(new UserRPVM() { UserName = user.UserName });
         }
 
         private JwtSecurityToken GetToken(List<Claim> authClaims) {

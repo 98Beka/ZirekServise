@@ -95,7 +95,7 @@ namespace ZirekService.Controllers
             return Ok();
         }
 
-        [HttpDelete("/DeleteWordsNode")]
+        [HttpGet("/DeleteWordsNode")]
         public IActionResult DeleteWordsNode(int id) {
             var nodeEntity = _context.WordsNodes.Where(s => s.Id == id).FirstOrDefault();
             if (nodeEntity == null)
