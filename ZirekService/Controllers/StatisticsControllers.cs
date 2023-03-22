@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Minjust.Cdb.Api.Models;
 using System.Data;
 using ZirekService.Data;
 using ZirekService.Models;
@@ -23,7 +22,7 @@ public class StatisticController : Controller
          _context.StatisticClassificators.ToList();
 
     [HttpPost("/GetStatistic")]
-    public IActionResult GetStatistic(StatisticFilterVM filter) {
+    public IActionResult GetStatistic(StatisticFilter filter) {
         if (string.IsNullOrEmpty(filter.StatisticClassificatorName))
             return null;
 

@@ -1,6 +1,7 @@
 ﻿using ZirekService.Data;
 using ZirekService.Interfaces;
 using ZirekService.Models;
+using ZirekService.Models.Entities;
 
 namespace ZirekService.Services
 {

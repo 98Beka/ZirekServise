@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using ZirekService.Models.Entities;
 
 namespace ZirekService.Models;
 

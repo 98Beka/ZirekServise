@@ -2,8 +2,10 @@
 using Newtonsoft.Json.Linq;
 using ZirekService.Data;
 using ZirekService.Models;
+using ZirekService.Models.Entities;
 
-namespace ZirekService.Services {
+namespace ZirekService.Services
+{
     public class AuditService {
         private readonly ApplicationDbContext _context;
         private readonly IHttpContextAccessor _httpContextAccessor;
@@ -24,7 +26,7 @@ namespace ZirekService.Services {
             if (string.IsNullOrEmpty(entityName))
                 entityName = entity.GetType().Name;
 
-            BaseAudit baseAudit = new BaseAudit {
+            BaseAuditEntity baseAudit = new BaseAuditEntity {
                 EntityId = Id,
                 EntityGuid = "",
                 EntityName = entityName,

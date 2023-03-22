@@ -3,9 +3,9 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Data;
 using ZirekService.Data;
-using ZirekService.Models;
+using ZirekService.Models.Entities;
+using ZirekService.Models.WordsNodes;
 using ZirekService.Services;
-using ZirekService.ViewModels;
 
 namespace ZirekService.Controllers
 {
@@ -68,7 +68,7 @@ namespace ZirekService.Controllers
         }
 
         [HttpPost("/GetWordsNodes")]
-        public List<WordsNodeVM> GetWordsNodes(WordsNodeFilterVM filter) {
+        public IActionResult GetWordsNodes(WordsNodeFilter filter) {
             IQueryable<WordsNodeEntity> nodes = _context.WordsNodes;
 
             var account = _accountService.GetCurrentAccount();
@@ -80,11 +80,11 @@ namespace ZirekService.Controllers
             if (!string.IsNullOrEmpty(filter.Name))
                 nodes = nodes.Where(s => s.Name == filter.Name);
 
-            return nodes.Select(s => new WordsNodeVM() { Name = s.Name, Id = s.Id, IsPublic = s.IsPublic} ).ToList();
+            return Ok(nodes.FirstOrDefault());
         }
 
-        [HttpPost("/EditWordsNode")]
-        public IActionResult EditWordsNode(WordsNodeVM node) {
+        [HttpPut("/EditWordsNode")]
+        public IActionResult EditWordsNode(WordsNodeEdit node) {
             var nodeEntity = _context.WordsNodes.Where(s => s.Id == node.Id).FirstOrDefault();
             if (nodeEntity == null)
                 return NotFound();
@@ -106,15 +106,17 @@ namespace ZirekService.Controllers
         }
 
         [HttpPost("/CreateWordsNode")]
-        public IActionResult CreateWordsNode(CreateWordsNodeVM node) {
+        public IActionResult CreateWordsNode(WordsNodeCreate node) {
+            var tags = _context.Tags.Where(x => node.Tags.Contains(x.Value.Trim().ToLower())).FirstOrDefault();
             var account = _accountService.GetCurrentAccount();
             if (account == null)
                 throw new NullReferenceException("WordsNodesController: account=null");
             var newNode = new WordsNodeEntity() {
                 Name = node.Name,
                 IsPublic = node.IsPublic,
-                AccountId = account.Id
+                AccountId = account.Id,
             };
+            newNode.Tags.Add(tags);
 
             _context.WordsNodes.Add(newNode);
             _context.SaveChanges();

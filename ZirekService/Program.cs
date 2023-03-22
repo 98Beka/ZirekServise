@@ -6,6 +6,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System;
 using System.Text;
+using System.Text.Json.Serialization;
 using ZirekService;
 using ZirekService.Data;
 using ZirekService.Interfaces;
@@ -15,7 +16,7 @@ var builder = WebApplication.CreateBuilder(args);
 ConfigurationManager configuration = builder.Configuration;
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(
-        builder.Configuration.GetConnectionString("ZirekService")));
+        builder.Configuration.GetConnectionString("DefaultConnection")));
 
 
 builder.Services.AddIdentity<IdentityUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = false)
@@ -26,6 +27,9 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<RoleService>();
 builder.Services.AddTransient<AccountService>();
 builder.Services.AddScoped<IVisitStatisticService, VisitStatisticService>();
+builder.Services.AddControllers().AddJsonOptions(options => {
+    options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
+});
 
 builder.Services.AddAuthentication(options => {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;

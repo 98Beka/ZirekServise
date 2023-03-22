@@ -2,9 +2,10 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using ZirekService.Data;
-using ZirekService.Models;
+using ZirekService.Models.Entities;
 
-namespace ZirekService.Services {
+namespace ZirekService.Services
+{
     public class AccountService {
         private readonly ApplicationDbContext _context;
         private readonly UserManager<IdentityUser> _userManager;

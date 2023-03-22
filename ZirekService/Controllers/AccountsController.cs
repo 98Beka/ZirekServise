@@ -7,8 +7,9 @@ using System.Data;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using ZirekService.Models;
+using ZirekService.Models.User;
 using ZirekService.Services;
-using ZirekService.ViewModels;
 
 namespace ZirekService.Controllers
 {
@@ -24,7 +25,7 @@ namespace ZirekService.Controllers
         }
 
         [HttpPost("/Login")]
-        public async Task<IActionResult> Login(LoginVM model) {
+        public async Task<IActionResult> Login(UserLogin model) {
             model.Email = model.Email.ToLower().Trim();
             var user = await _userManager.FindByEmailAsync(model.Email);
             if (user != null) {
@@ -53,11 +54,11 @@ namespace ZirekService.Controllers
         }
 
         [HttpPost("/Register")]
-        public async Task<IActionResult> Register(RegisterVM model) {
+        public async Task<IActionResult> Register(UserRegister model) {
             model.Email = model.Email.ToLower().Trim();
             var userExists = await _userManager.FindByEmailAsync(model.Email);
             if (userExists != null)
-                return StatusCode(StatusCodes.Status500InternalServerError, new ResponseVM { Status = "Error", Message = "User already exists!" });
+                return StatusCode(StatusCodes.Status500InternalServerError, new { Status = "Error", Message = "User already exists!" });
 
             IdentityUser user = new() {
                 Email = model.Email,
@@ -69,7 +70,7 @@ namespace ZirekService.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, result.Errors);
             else
                 await _userManager.AddToRoleAsync(user, RoleService.UserRole);
-            return Ok(new ResponseVM { Status = "Success", Message = "User created successfully!" });
+            return Ok(new { Status = "Success", Message = "User created successfully!" });
         }
 
         [HttpGet("/GetUserInfor")]
@@ -81,7 +82,7 @@ namespace ZirekService.Controllers
             var user = await _userManager.Users.Where(x => x.Email.ToLower().Trim() == email).FirstOrDefaultAsync();
             if (user == null)
                 return NotFound();
-            return Ok(new UserRPVM() { UserName = user.UserName });
+            return Ok(new { user.UserName });
         }
 
         private JwtSecurityToken GetToken(List<Claim> authClaims) {

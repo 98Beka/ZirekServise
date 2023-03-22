@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using ZirekService.Data;
@@ -11,9 +12,11 @@ using ZirekService.Data;
 namespace ZirekService.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230322035942_fix_En_Words_Types")]
+    partial class fixEnWordsTypes
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -301,7 +304,7 @@ namespace ZirekService.Migrations
                     b.Property<float>("Priority")
                         .HasColumnType("real");
 
-                    b.Property<int>("TagId")
+                    b.Property<int>("TypeId")
                         .HasColumnType("integer");
 
                     b.Property<string>("Value")
@@ -316,6 +319,45 @@ namespace ZirekService.Migrations
                     b.HasIndex("WordsNodeEntityId");
 
                     b.ToTable("EnWords");
+                });
+
+            modelBuilder.Entity("ZirekService.Models.Entities.EnWordsType", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Value")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("EnWordsTypes");
+                });
+
+            modelBuilder.Entity("ZirekService.Models.Entities.KeyWordEntity", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Value")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int?>("WordsNodeEntityId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("WordsNodeEntityId");
+
+                    b.ToTable("keyWords");
                 });
 
             modelBuilder.Entity("ZirekService.Models.Entities.RuWordEnity", b =>
@@ -359,28 +401,6 @@ namespace ZirekService.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Statistics");
-                });
-
-            modelBuilder.Entity("ZirekService.Models.Entities.TagEntity", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Value")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<int?>("WordsNodeEntityId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("WordsNodeEntityId");
-
-                    b.ToTable("TagEntity");
                 });
 
             modelBuilder.Entity("ZirekService.Models.Entities.WordsNodeEntity", b =>
@@ -501,10 +521,10 @@ namespace ZirekService.Migrations
                         .HasForeignKey("WordsNodeEntityId");
                 });
 
-            modelBuilder.Entity("ZirekService.Models.Entities.TagEntity", b =>
+            modelBuilder.Entity("ZirekService.Models.Entities.KeyWordEntity", b =>
                 {
                     b.HasOne("ZirekService.Models.Entities.WordsNodeEntity", null)
-                        .WithMany("Tags")
+                        .WithMany("KeyWords")
                         .HasForeignKey("WordsNodeEntityId");
                 });
 
@@ -528,7 +548,7 @@ namespace ZirekService.Migrations
                 {
                     b.Navigation("EnWords");
 
-                    b.Navigation("Tags");
+                    b.Navigation("KeyWords");
                 });
 #pragma warning restore 612, 618
         }
